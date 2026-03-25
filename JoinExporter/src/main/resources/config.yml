@@ -1,0 +1,14 @@
+google:
+  webhookUrl: "PUT_YOUR_GOOGLE_APPS_SCRIPT_EXEC_URL_HERE"
+  secret: "PUT_A_LONG_RANDOM_SHARED_SECRET_HERE"
+
+options:
+  update-on-join: true
+  log-success: true
+
+  # Choose which Paper timestamp to use for the "last join" column
+  # valid values: lastLogin, lastSeen
+  last-date-source: "lastLogin"
+
+  # Connection/read timeout for webhook requests
+  timeout-ms: 10000

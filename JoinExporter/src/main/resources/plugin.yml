@@ -1,0 +1,31 @@
+name: JoinExporter
+version: 1.0.0
+main: xyz.shadowlight.joinexporter.JoinExporterPlugin
+api-version: "1.21"
+author: ShadowLight
+description: Exports Minecraft join data to Google Sheets
+
+commands:
+  exportjoins:
+    description: Export all known players to Google Sheets
+    usage: /exportjoins
+    permission: joinexporter.export
+
+  exportplayer:
+    description: Export one player to Google Sheets
+    usage: /exportplayer <name>
+    permission: joinexporter.export
+
+  joinexporterreload:
+    description: Reload JoinExporter config
+    usage: /joinexporterreload
+    permission: joinexporter.reload
+
+permissions:
+  joinexporter.export:
+    description: Allows exporting join data
+    default: op
+
+  joinexporter.reload:
+    description: Allows reloading the plugin config
+    default: op

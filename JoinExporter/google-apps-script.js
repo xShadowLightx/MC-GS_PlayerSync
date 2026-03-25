@@ -1,0 +1,54 @@
+const SHEET_NAME = 'Players';
+const SHARED_SECRET = 'PUT_A_LONG_RANDOM_SHARED_SECRET_HERE';
+
+function doPost(e) {
+  try {
+    const body = JSON.parse(e.postData.contents);
+
+    if (body.secret !== SHARED_SECRET) {
+      return json({ ok: false, error: 'unauthorized' });
+    }
+
+    const player = body.player || {};
+
+    const uuid = String(player.uuid || '');
+    const name = String(player.name || '');
+    const firstJoin = player.firstJoin ? new Date(player.firstJoin) : '';
+    const lastJoin = player.lastJoin ? new Date(player.lastJoin) : '';
+
+    if (!uuid) {
+      return json({ ok: false, error: 'missing uuid' });
+    }
+
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      return json({ ok: false, error: 'sheet not found' });
+    }
+
+    const data = sheet.getDataRange().getValues();
+
+    let foundRow = -1;
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][0]) === uuid) {
+        foundRow = i + 1;
+        break;
+      }
+    }
+
+    if (foundRow === -1) {
+      sheet.appendRow([uuid, name, firstJoin, lastJoin]);
+    } else {
+      sheet.getRange(foundRow, 2, 1, 3).setValues([[name, firstJoin, lastJoin]]);
+    }
+
+    return json({ ok: true, uuid: uuid, name: name });
+  } catch (err) {
+    return json({ ok: false, error: String(err) });
+  }
+}
+
+function json(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
