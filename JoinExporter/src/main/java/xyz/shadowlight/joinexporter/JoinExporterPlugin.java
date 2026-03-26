@@ -354,7 +354,7 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
     private final long firstJoin;
     private final long lastJoin;
     private final String role;
-    privata final int playTicks;
+    private final int playTicks;
     private final double playHours;
 
     private PlayerRow(String uuid, String name, long firstJoin, long lastJoin, String role) {
