@@ -15,6 +15,7 @@ function doPost(e) {
     const name = String(player.name || '');
     const firstJoin = player.firstJoin ? new Date(player.firstJoin) : '';
     const lastJoin = player.lastJoin ? new Date(player.lastJoin) : '';
+    const role = String(player.role || '');
 
     if (!uuid) {
       return json({ ok: false, error: 'missing uuid' });
@@ -36,12 +37,12 @@ function doPost(e) {
     }
 
     if (foundRow === -1) {
-      sheet.appendRow([uuid, name, firstJoin, lastJoin]);
+      sheet.appendRow([uuid, name, firstJoin, lastJoin, role]);
     } else {
-      sheet.getRange(foundRow, 2, 1, 3).setValues([[name, firstJoin, lastJoin]]);
+      sheet.getRange(foundRow, 2, 1, 4).setValues([[name, firstJoin, lastJoin, role]]);
     }
 
-    return json({ ok: true, uuid: uuid, name: name });
+    return json({ ok: true, uuid: uuid, name: name ,role: role});
   } catch (err) {
     return json({ ok: false, error: String(err) });
   }
