@@ -18,6 +18,7 @@ UUID
 Username
 First join date
 Last join date (configurable: lastLogin or lastSeen)
+Highest Role (Luckperms Only)
 
 
 🚀 Commands
