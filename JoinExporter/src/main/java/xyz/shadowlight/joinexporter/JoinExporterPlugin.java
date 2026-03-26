@@ -130,7 +130,7 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
     }
 
     private PlayerRow toPlayerRow(OfflinePlayer player) {
-        init playTicks = 0;
+        int playTicks = 0;
 
         try {
             playTicks = player.getStatistic(org.bukkit.Statistic.PLAY_ONE_MINUTE);
