@@ -1,19 +1,20 @@
 package xyz.shadowlight.joinexporter;
 
 import com.google.gson.Gson;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Statistic;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.model.user.User;
-import org.bukkit.entity.Player;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
 public final class JoinExporterPlugin extends JavaPlugin implements Listener, TabExecutor {
 
@@ -33,24 +35,17 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
     private boolean updateOnJoin;
     private boolean logSuccess;
     private String lastDateSource;
+    private boolean loadLuckPermsOfflineUsers;
     private int timeoutMs;
+
     private LuckPerms luckPerms;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         loadSettings();
-        
-        if (getServer().getPluginManager().getPlugin("LuckPerms") != null) {
-        try {
-            luckPerms = LuckPermsProvider.get();
-            getLogger().info("Hooked into LuckPerms.");
-        } catch (IllegalStateException e) {
-            getLogger().warning("LuckPerms found but API was not available.");
-        }
-    }
 
-
+        hookLuckPerms();
 
         getServer().getPluginManager().registerEvents(this, this);
 
@@ -72,30 +67,20 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
         getLogger().info("JoinExporter enabled.");
     }
 
-
-
-    private String resolveRole(OfflinePlayer player) {
-    if (luckPerms == null) {
-        return "";
-    }
-
-    try {
-        if (player.isOnline() && player.getPlayer() != null) {
-            User user = luckPerms.getPlayerAdapter(Player.class).getUser(player.getPlayer());
-            return user.getPrimaryGroup();
+    private void hookLuckPerms() {
+        if (getServer().getPluginManager().getPlugin("LuckPerms") == null) {
+            getLogger().info("LuckPerms not found. Role export disabled.");
+            return;
         }
 
-        User user = luckPerms.getUserManager().getUser(player.getUniqueId());
-        if (user != null) {
-            return user.getPrimaryGroup();
+        try {
+            luckPerms = LuckPermsProvider.get();
+            getLogger().info("Hooked into LuckPerms.");
+        } catch (IllegalStateException e) {
+            getLogger().warning("LuckPerms found but API was not available.");
+            luckPerms = null;
         }
-
-        return "";
-    } catch (Exception e) {
-        getLogger().warning("Failed to resolve LuckPerms role for " + player.getName() + ": " + e.getMessage());
-        return "";
     }
-}
 
     private void loadSettings() {
         reloadConfig();
@@ -105,6 +90,7 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
         updateOnJoin = getConfig().getBoolean("options.update-on-join", true);
         logSuccess = getConfig().getBoolean("options.log-success", true);
         lastDateSource = getConfig().getString("options.last-date-source", "lastLogin").trim();
+        loadLuckPermsOfflineUsers = getConfig().getBoolean("options.load-luckperms-offline-users", true);
         timeoutMs = getConfig().getInt("options.timeout-ms", 10000);
 
         if (!lastDateSource.equalsIgnoreCase("lastLogin") && !lastDateSource.equalsIgnoreCase("lastSeen")) {
@@ -129,42 +115,86 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
         return player.getLastLogin();
     }
 
-    private PlayerRow toPlayerRow(OfflinePlayer player) {
-        int playTicks = 0;
-
+    private double resolvePlayHours(OfflinePlayer player) {
         try {
-            playTicks = player.getStatistic(org.bukkit.Statistic.PLAY_ONE_MINUTE);
+            int ticks = player.getStatistic(Statistic.PLAY_ONE_MINUTE);
+            return Math.round((ticks / 20.0 / 3600.0) * 100.0) / 100.0;
         } catch (Exception e) {
-            getLogger().warning("Failed to get play ticks for " + player.getName() + ": " + e.getMessage());
+            String name = player.getName() == null ? player.getUniqueId().toString() : player.getName();
+            getLogger().warning("Failed to read playtime for " + name + ": " + e.getMessage());
+            return 0.0;
+        }
+    }
+
+    private CompletableFuture<String> resolveRoleAsync(OfflinePlayer player) {
+        if (luckPerms == null) {
+            return CompletableFuture.completedFuture("");
         }
 
-        double playHours = playTicks / 20.0 / 3600.0;
+        try {
+            if (player.isOnline() && player.getPlayer() != null) {
+                User user = luckPerms.getPlayerAdapter(Player.class).getUser(player.getPlayer());
+                return CompletableFuture.completedFuture(user.getPrimaryGroup());
+            }
 
-    return new PlayerRow(
-            player.getUniqueId().toString(),
-            player.getName() == null ? "" : player.getName(),
-            player.getFirstPlayed(),
-            resolveLastDate(player),
-            resolveRole(player),
-            playTicks,
-            playHours
-    );
-}
+            User loadedUser = luckPerms.getUserManager().getUser(player.getUniqueId());
+            if (loadedUser != null) {
+                return CompletableFuture.completedFuture(loadedUser.getPrimaryGroup());
+            }
+
+            if (!loadLuckPermsOfflineUsers) {
+                return CompletableFuture.completedFuture("");
+            }
+
+            return luckPerms.getUserManager()
+                    .loadUser(player.getUniqueId(), player.getName())
+                    .thenApply(User::getPrimaryGroup)
+                    .exceptionally(ex -> {
+                        String name = player.getName() == null ? player.getUniqueId().toString() : player.getName();
+                        getLogger().warning("Failed to load LuckPerms data for " + name + ": " + ex.getMessage());
+                        return "";
+                    });
+
+        } catch (Exception e) {
+            String name = player.getName() == null ? player.getUniqueId().toString() : player.getName();
+            getLogger().warning("Failed to resolve role for " + name + ": " + e.getMessage());
+            return CompletableFuture.completedFuture("");
+        }
+    }
+
+    private CompletableFuture<PlayerRow> toPlayerRowAsync(OfflinePlayer player) {
+        String uuid = player.getUniqueId().toString();
+        String name = player.getName() == null ? "" : player.getName();
+        long firstJoin = player.getFirstPlayed();
+        long lastJoin = resolveLastDate(player);
+        double playHours = resolvePlayHours(player);
+
+        return resolveRoleAsync(player).thenApply(role ->
+                new PlayerRow(uuid, name, firstJoin, lastJoin, role, playHours)
+        );
+    }
 
     private void exportPlayerAsync(OfflinePlayer player, CommandSender senderToNotify) {
-        PlayerRow row = toPlayerRow(player);
-
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-            ExportResult result = sendRow(row);
+            try {
+                PlayerRow row = toPlayerRowAsync(player).join();
+                ExportResult result = sendRow(row);
 
-            if (senderToNotify != null) {
-                Bukkit.getScheduler().runTask(this, () -> {
-                    if (result.success) {
-                        senderToNotify.sendMessage("[JoinExporter] Exported " + row.name + " successfully.");
-                    } else {
-                        senderToNotify.sendMessage("[JoinExporter] Failed to export " + row.name + ": " + result.message);
-                    }
-                });
+                if (senderToNotify != null) {
+                    Bukkit.getScheduler().runTask(this, () -> {
+                        if (result.success) {
+                            senderToNotify.sendMessage("[JoinExporter] Exported " + row.name + " successfully.");
+                        } else {
+                            senderToNotify.sendMessage("[JoinExporter] Failed to export " + row.name + ": " + result.message);
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                if (senderToNotify != null) {
+                    Bukkit.getScheduler().runTask(this, () ->
+                            senderToNotify.sendMessage("[JoinExporter] Failed to export player: " + e.getMessage())
+                    );
+                }
             }
         });
     }
@@ -179,14 +209,20 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
                     continue;
                 }
 
-                PlayerRow row = toPlayerRow(player);
-                ExportResult result = sendRow(row);
+                try {
+                    PlayerRow row = toPlayerRowAsync(player).join();
+                    ExportResult result = sendRow(row);
 
-                if (result.success) {
-                    exported++;
-                } else {
+                    if (result.success) {
+                        exported++;
+                    } else {
+                        failed++;
+                        getLogger().warning("Failed to export " + row.name + ": " + result.message);
+                    }
+                } catch (Exception e) {
                     failed++;
-                    getLogger().warning("Failed to export " + row.name + ": " + result.message);
+                    String name = player.getName() == null ? player.getUniqueId().toString() : player.getName();
+                    getLogger().warning("Failed to export " + name + ": " + e.getMessage());
                 }
             }
 
@@ -305,6 +341,7 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
                 }
 
                 loadSettings();
+                hookLuckPerms();
                 sender.sendMessage("[JoinExporter] Config reloaded.");
                 return true;
             }
@@ -349,24 +386,22 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
     }
 
     private static final class PlayerRow {
-    private final String uuid;
-    private final String name;
-    private final long firstJoin;
-    private final long lastJoin;
-    private final String role;
-    private final int playTicks;
-    private final double playHours;
+        private final String uuid;
+        private final String name;
+        private final long firstJoin;
+        private final long lastJoin;
+        private final String role;
+        private final double playHours;
 
-    private PlayerRow(String uuid, String name, long firstJoin, long lastJoin, String role) {
-        this.uuid = uuid;
-        this.name = name;
-        this.firstJoin = firstJoin;
-        this.lastJoin = lastJoin;
-        this.role = role;
-        this.playTicks = playTicks;
-        this.playHours = playHours;
+        private PlayerRow(String uuid, String name, long firstJoin, long lastJoin, String role, double playHours) {
+            this.uuid = uuid;
+            this.name = name;
+            this.firstJoin = firstJoin;
+            this.lastJoin = lastJoin;
+            this.role = role;
+            this.playHours = playHours;
+        }
     }
-}
 
     private static final class ExportResult {
         private final boolean success;
