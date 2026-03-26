@@ -1,5 +1,5 @@
 name: JoinExporter
-version: 1.0.1
+version: 1.0.2
 main: xyz.shadowlight.joinexporter.JoinExporterPlugin
 api-version: "1.21"
 author: ShadowLight

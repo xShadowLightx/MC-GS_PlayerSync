@@ -1,5 +1,7 @@
 # 📊 Minecraft-GoogleSheets Player Sync (mc-gs)
 
+Latest Release: V 1.0.2
+
 Export player join data from your Paper server directly into Google Sheets — automatically.
 
 ## ✨ Features

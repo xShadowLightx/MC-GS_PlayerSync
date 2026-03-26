@@ -130,12 +130,24 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
     }
 
     private PlayerRow toPlayerRow(OfflinePlayer player) {
+        init playTicks = 0;
+
+        try {
+            playTicks = player.getStatistic(org.bukkit.Statistic.PLAY_ONE_MINUTE);
+        } catch (Exception e) {
+            getLogger().warning("Failed to get play ticks for " + player.getName() + ": " + e.getMessage());
+        }
+
+        double playHours = playTicks / 20.0 / 3600.0;
+
     return new PlayerRow(
             player.getUniqueId().toString(),
             player.getName() == null ? "" : player.getName(),
             player.getFirstPlayed(),
             resolveLastDate(player),
-            resolveRole(player)
+            resolveRole(player),
+            playTicks,
+            playHours
     );
 }
 
@@ -342,6 +354,8 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
     private final long firstJoin;
     private final long lastJoin;
     private final String role;
+    privata fianl int playTicks;
+    private final double playHours;
 
     private PlayerRow(String uuid, String name, long firstJoin, long lastJoin, String role) {
         this.uuid = uuid;
@@ -349,6 +363,8 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
         this.firstJoin = firstJoin;
         this.lastJoin = lastJoin;
         this.role = role;
+        this.playTicks = playTicks;
+        this.playHours = playHours;
     }
 }
 
