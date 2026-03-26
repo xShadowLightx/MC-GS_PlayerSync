@@ -1,8 +1,8 @@
-📊 Minecraft-GoogleSheets Player Sync (mc-gs)
+# 📊 Minecraft-GoogleSheets Player Sync (mc-gs)
 
 Export player join data from your Paper server directly into Google Sheets — automatically.
 
-✨ Features
+## ✨ Features
 📥 Automatic tracking — exports player data every time someone joins
 📊 Google Sheets integration — no database required
 🧾 First & last join dates — pulled directly from Paper
@@ -21,14 +21,14 @@ Last join date (configurable: lastLogin or lastSeen)
 Highest Role (Luckperms Only)
 
 
-🚀 Commands
+## 🚀 Commands
 Command	Description
 /exportjoins	Export all known players
 /exportplayer <name>	Export a single player
 /joinexporterreload	Reload config
 
 
-⚙️ Requirements
+## ⚙️ Requirements
 Paper 1.21+
 Java 21
 Google account (for Sheets)
@@ -37,12 +37,12 @@ very basic dev knoweledge (edit configs, follow wiki instructions)
 
 
 
-🧠 How It Works
+## 🧠 How It Works
 MC-GS-PlayerSync sends player data to a lightweight Google Apps Script webhook, which writes it directly into your Google Sheet.
 
 No databases. No APIs to manage. No plugins on other services.
 
-🛠 Setup Overview
+## 🛠 Setup Overview
 put mcgsplayersync.jar in your /plugins folder
 restart server
 Create a Google Sheet
@@ -55,13 +55,13 @@ Restart the plugin
 
 Done.
 
-🔒 Security
+## 🔒 Security
 Uses a shared secret to validate requests
 Your data is only written to your own Google Sheet
 No external services or tracking
 
 
-💡 Use Cases
+## 💡 Use Cases
 Staff analytics
 Player retention tracking
 Whitelist/history logs
@@ -69,14 +69,14 @@ Server growth tracking
 Discord bot integrations (via Sheets)
 
 
-📎 Notes
+## 📎 Notes
 First join dates include historical data (even before plugin install)
 Use /exportjoins once after install to backfill
 Large servers may take time to export all players
 Automaticly updates data for each player on Join
 
 
-❤️ Why This Plugin?
+## ❤️ Why This Plugin?
 
 Most join trackers require databases or external services.
 JoinExporter keeps it simple:
@@ -87,6 +87,6 @@ JoinExporter keeps it simple:
 
 
 
-📦 Support / Issues
+## 📦 Support / Issues
 
 If you run into problems or have feature requests, open an issue or reach out.
