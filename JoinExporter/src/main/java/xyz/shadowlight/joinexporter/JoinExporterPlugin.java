@@ -10,6 +10,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
+import org.bukkit.entity.Player;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,11 +34,23 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
     private boolean logSuccess;
     private String lastDateSource;
     private int timeoutMs;
+    private LuckPerms luckPerms;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         loadSettings();
+        
+        if (getServer().getPluginManager().getPlugin("LuckPerms") != null) {
+        try {
+            luckPerms = LuckPermsProvider.get();
+            getLogger().info("Hooked into LuckPerms.");
+        } catch (IllegalStateException e) {
+            getLogger().warning("LuckPerms found but API was not available.");
+        }
+    }
+
+
 
         getServer().getPluginManager().registerEvents(this, this);
 
@@ -55,6 +71,31 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
 
         getLogger().info("JoinExporter enabled.");
     }
+
+
+
+    private String resolveRole(OfflinePlayer player) {
+    if (luckPerms == null) {
+        return "";
+    }
+
+    try {
+        if (player.isOnline() && player.getPlayer() != null) {
+            User user = luckPerms.getPlayerAdapter(Player.class).getUser(player.getPlayer());
+            return user.getPrimaryGroup();
+        }
+
+        User user = luckPerms.getUserManager().getUser(player.getUniqueId());
+        if (user != null) {
+            return user.getPrimaryGroup();
+        }
+
+        return "";
+    } catch (Exception e) {
+        getLogger().warning("Failed to resolve LuckPerms role for " + player.getName() + ": " + e.getMessage());
+        return "";
+    }
+}
 
     private void loadSettings() {
         reloadConfig();
@@ -89,13 +130,14 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
     }
 
     private PlayerRow toPlayerRow(OfflinePlayer player) {
-        return new PlayerRow(
-                player.getUniqueId().toString(),
-                player.getName() == null ? "" : player.getName(),
-                player.getFirstPlayed(),
-                resolveLastDate(player)
-        );
-    }
+    return new PlayerRow(
+            player.getUniqueId().toString(),
+            player.getName() == null ? "" : player.getName(),
+            player.getFirstPlayed(),
+            resolveLastDate(player),
+            resolveRole(player)
+    );
+}
 
     private void exportPlayerAsync(OfflinePlayer player, CommandSender senderToNotify) {
         PlayerRow row = toPlayerRow(player);
@@ -295,18 +337,20 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
     }
 
     private static final class PlayerRow {
-        private final String uuid;
-        private final String name;
-        private final long firstJoin;
-        private final long lastJoin;
+    private final String uuid;
+    private final String name;
+    private final long firstJoin;
+    private final long lastJoin;
+    private final String role;
 
-        private PlayerRow(String uuid, String name, long firstJoin, long lastJoin) {
-            this.uuid = uuid;
-            this.name = name;
-            this.firstJoin = firstJoin;
-            this.lastJoin = lastJoin;
-        }
+    private PlayerRow(String uuid, String name, long firstJoin, long lastJoin, String role) {
+        this.uuid = uuid;
+        this.name = name;
+        this.firstJoin = firstJoin;
+        this.lastJoin = lastJoin;
+        this.role = role;
     }
+}
 
     private static final class ExportResult {
         private final boolean success;

@@ -1,9 +1,13 @@
 name: JoinExporter
-version: 1.0.0
+version: 1.0.1
 main: xyz.shadowlight.joinexporter.JoinExporterPlugin
 api-version: "1.21"
 author: ShadowLight
 description: Exports Minecraft join data to Google Sheets
+
+
+softdepend:
+  - LuckPerms
 
 commands:
   exportjoins:
