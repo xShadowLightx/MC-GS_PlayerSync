@@ -92,3 +92,7 @@ JoinExporter keeps it simple:
 ## 📦 Support / Issues
 
 If you run into problems or have feature requests, open an issue or reach out.
+
+Please join the development discord for issues or requests:
+https://discord.gg/FMvSubmg3M
+
