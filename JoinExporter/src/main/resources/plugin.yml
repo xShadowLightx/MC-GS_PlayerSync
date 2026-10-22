@@ -1,5 +1,5 @@
 name: MC-GAPI
-version: 2.0.0
+version: v-2.1.0
 main: xyz.shadowlight.joinexporter.JoinExporterPlugin
 api-version: "1.21"
 author: xShadowLightx
