@@ -1,9 +1,9 @@
-name: JoinExporter
-version: 1.0.2
+name: MC-GAPI
+version: 2.0.0
 main: xyz.shadowlight.joinexporter.JoinExporterPlugin
 api-version: "1.21"
-author: ShadowLight
-description: Exports Minecraft join data to Google Sheets
+author: xShadowLightx
+description: Exports Minecraft player data to Google Sheets
 
 
 softdepend:
@@ -12,6 +12,10 @@ softdepend:
   - CMI
 
 commands:
+  mcgapi:
+    description: MC-GAPI commands
+    usage: /mcgapi <export|player <name>|mydata|ingame <name>|delete <player|uuid>|reload>
+
   exportjoins:
     description: Export all known players to Google Sheets
     usage: /exportjoins
@@ -23,15 +27,39 @@ commands:
     permission: joinexporter.export
 
   joinexporterreload:
-    description: Reload JoinExporter config
+    description: Reload MC-GAPI config
     usage: /joinexporterreload
     permission: joinexporter.reload
 
 permissions:
+  mcgapi.export:
+    description: Allows exporting player data with MC-GAPI
+    default: op
+
+  mcgapi.reload:
+    description: Allows reloading the MC-GAPI config
+    default: op
+
+  mcgapi.delete:
+    description: Allows deleting a player's exported data
+    default: op
+
+  mcgapi.view-others:
+    description: Allows viewing another player's export data in game
+    default: op
+
+  mcgapi.update-notify:
+    description: Receives MC-GAPI update notifications when joining
+    default: op
+
   joinexporter.export:
-    description: Allows exporting join data
+    description: Legacy permission; also allows MC-GAPI exports
     default: op
 
   joinexporter.reload:
-    description: Allows reloading the plugin config
+    description: Legacy permission; also allows MC-GAPI config reloads
+    default: op
+
+  joinexporter.update-notify:
+    description: Legacy permission; also allows MC-GAPI update notifications
     default: op

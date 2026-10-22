@@ -2,6 +2,23 @@ google:
   webhookUrl: "PUT_YOUR_GOOGLE_APPS_SCRIPT_EXEC_URL_HERE"
   secret: "PUT_A_LONG_RANDOM_SHARED_SECRET_HERE"
 
+fields:
+  # UUID is always exported because the Apps Script uses it to find the player's row.
+  name: true
+  first-join: true
+  last-join: true
+  role: true
+  play-hours: true
+  balance: true
+  deaths: true
+  player-kills: true
+  logout-location: true
+
+redaction:
+  # Entries can be Minecraft usernames (case-insensitive) or UUIDs.
+  # UUID and player name remain visible; every other player field becomes "redacted".
+  blacklist: []
+
 options:
   update-on-join: true
   log-success: true
@@ -12,3 +29,7 @@ options:
 
   # Connection/read timeout for webhook requests
   timeout-ms: 10000
+
+  # Check GitHub Releases for updates
+  update-checker:
+    enabled: true
