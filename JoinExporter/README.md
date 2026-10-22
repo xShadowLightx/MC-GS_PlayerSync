@@ -123,17 +123,22 @@ The jar will be created in `build/libs/`.
 
 ## Commands
 
-- `/mcgapi export` - export all known players
-- `/mcgapi mydata` - privately show your own export data in chat
-- `/mcgapi ingame <name>` - privately view another player's export data (requires `mcgapi.view-others`)
-- `/mcgapi player <name>` - export one player (requires `mcgapi.export`)
-- `/mcgapi delete <player|uuid>` - delete that player's Google Sheets row (operators by default)
-- `/mcgapi reload` - reload config
+| Command | Description | Permission |
+| --- | --- | --- |
+| `/mcgapi export` | Export all known players | `mcgapi.export` |
+| `/mcgapi mydata` | Privately show your own export data in chat | Any player |
+| `/mcgapi ingame <name>` | Privately view another player's export data | `mcgapi.view-others` |
+| `/mcgapi player <name>` | Export one player | `mcgapi.export` |
+| `/mcgapi delete <player\|uuid>` | Delete that player's Google Sheets row | `mcgapi.delete` |
+| `/mcgapi reload` | Reload config | `mcgapi.reload` |
 
 Legacy commands remain available:
-- `/exportjoins` - export all known players
-- `/exportplayer <name>` - export one player
-- `/joinexporterreload` - reload config (kept for compatibility)
+
+| Command | Description | Permission |
+| --- | --- | --- |
+| `/exportjoins` | Export all known players | `joinexporter.export` (legacy) |
+| `/exportplayer <name>` | Export one player | `joinexporter.export` (legacy) |
+| `/joinexporterreload` | Reload config (kept for compatibility) | `joinexporter.reload` (legacy) |
 
 ## Permissions
 

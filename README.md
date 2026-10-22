@@ -34,14 +34,22 @@ You can list usernames or UUIDs under `redaction.blacklist` to replace a matchin
 
 
 ## 🚀 Commands
-Command	Description
-/mcgapi export	Export all known players
-/mcgapi mydata	Privately display your own export data
-/mcgapi ingame <name>	Privately view another player's data (admin permission)
-/mcgapi player <name>	Export a single player (admin permission)
-/mcgapi delete <player|uuid>	Delete a player's exported row (operator/admin)
-/mcgapi reload	Reload config
-Legacy commands remain available: /exportjoins, /exportplayer, /joinexporterreload
+| Command | Description | Permission |
+| --- | --- | --- |
+| `/mcgapi export` | Export all known players | `mcgapi.export` |
+| `/mcgapi mydata` | Privately display your own export data in chat | Any player |
+| `/mcgapi ingame <name>` | Privately view another player's export data | `mcgapi.view-others` |
+| `/mcgapi player <name>` | Export one player | `mcgapi.export` |
+| `/mcgapi delete <player\|uuid>` | Delete a player's exported row | `mcgapi.delete` |
+| `/mcgapi reload` | Reload the plugin config | `mcgapi.reload` |
+
+Legacy commands remain available:
+
+| Command | Description | Permission |
+| --- | --- | --- |
+| `/exportjoins` | Export all known players | `joinexporter.export` (legacy) |
+| `/exportplayer <name>` | Export one player | `joinexporter.export` (legacy) |
+| `/joinexporterreload` | Reload the plugin config | `joinexporter.reload` (legacy) |
 
 ## 🔑 Permission Nodes
 
