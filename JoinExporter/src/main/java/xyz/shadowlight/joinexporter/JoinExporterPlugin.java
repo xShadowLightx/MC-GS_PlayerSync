@@ -135,7 +135,35 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
 
         var console = Bukkit.getConsoleSender();
         console.sendMessage("§8§m----------------------------------------");
+        console.sendMessage("");
+        String[] logo = {
+                "░███     ░███   ░██████            ░██████     ░███    ░█████████  ░██████",
+                "░████   ░████  ░██   ░██          ░██   ░██   ░██░██   ░██     ░██   ░██",
+                "░██░██ ░██░██ ░██                ░██         ░██  ░██  ░██     ░██   ░██",
+                "░██ ░████ ░██ ░██        ░██████ ░██  █████ ░█████████ ░█████████    ░██",
+                "░██  ░██  ░██ ░██                ░██     ██ ░██    ░██ ░██           ░██",
+                "░██       ░██  ░██   ░██          ░██  ░███ ░██    ░██ ░██           ░██",
+                "░██       ░██   ░██████            ░█████░█ ░██    ░██ ░██         ░██████",
+                "",
+                "",
+                "",
+                "   ___               __                 __  ___       _",
+                "  / _ \\___ _  _____ / /__  ___  ___ ___/ / / _ )__ __(_) ",
+                " / // / -_) |/ / -_) / _ \\/ _ \\/ -_) _  / / _  / // /",
+                "/____/\\__/|___/\\__/_/\\___/ .__\\__/\\_,_/ /____/\\_, (_) ",
+                "           ______       /_/ __           __   /___/  __   __",
+                "    __ __ / __/ /  ___ ____/ /__ _    __/ /  (_)__ _/ /  / /___ __",
+                "    \\ \\ /_\\ \\/ _ \\/ _ `/ _  / _ \\ |/|/ / /__/ / _ `/ _ \\/ __/\\ \\ /",
+                "   /_\\_\\/___/_//_/\\_,_/\\_,_/\\___/__,__/____/_/\\_, /_//_/\\__//_\\_\\",
+                "                                             /___/"
+        };
+        for (String line : logo) {
+            console.sendMessage(line);
+        }
+        console.sendMessage("");
+        console.sendMessage("§8§m----------------------------------------");
         console.sendMessage("§b  ◆ MC-GAPI");
+        console.sendMessage("§7  Minecraft -> Google API");
         console.sendMessage("§7  Version: §f" + getDescription().getVersion());
         console.sendMessage("§7  Author: §f" + String.join(", ", getDescription().getAuthors()));
         console.sendMessage("§8§m----------------------------------------");
