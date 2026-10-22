@@ -5,28 +5,28 @@ Latest Release: V 2.0.0
 Export player join data from your Paper server directly into Google Sheets — automatically.
 
 ## ✨ Features
-📥 Automatic tracking — exports player data every time someone joins
-📊 Google Sheets integration — no database required
-🧾 First & last join dates — pulled directly from Paper
-🔁 Backfill support — export all existing players anytime
-👤 Single player export — useful for testing or moderation
-⚙️ Fully configurable — webhook, secret, logging, and date source
-🔔 Update notifications — console and authorized players get the release download link
-🔐 Shared-secret validation for webhook requests
+- 📥 Automatic tracking — exports player data every time someone joins
+- 📊 Google Sheets integration — no database required
+- 🧾 First & last join dates — pulled directly from Paper
+- 🔁 Backfill support — export all existing players anytime
+- 👤 Single player export — useful for testing or moderation
+- ⚙️ Fully configurable — webhook, secret, logging, and date source
+- 🔔 Update notifications — console and authorized players get the release download link
+- 🔐 Shared-secret validation for webhook requests
 📌 What It Tracks
 
 For every player:
 
-UUID
-Username
-First join date
-Last join date (configurable: lastLogin or lastSeen)
-Highest Role (Luckperms Only)
-Play hours
-Balance (Vault economy)
-Deaths
-Player kills
-Logout location (X,Y,Z from the player's previous disconnect)
+- UUID
+- Username
+- First join date
+- Last join date (configurable: `lastLogin` or `lastSeen`)
+- Highest role (LuckPerms only)
+- Play hours
+- Balance (Vault economy)
+- Deaths
+- Player kills
+- Logout location (`X,Y,Z` from the player's previous disconnect)
 
 Each field except UUID can be enabled or disabled individually in the `fields` section of `plugins/MC-GAPI/config.yml`. Disabled fields show `N/A` in their existing sheet columns. Review these settings before enabling exports and turn off every field you do not need.
 
