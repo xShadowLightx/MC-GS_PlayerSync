@@ -29,11 +29,11 @@ JoinExporter is a Paper plugin that exports player first join and last join data
 
 ## Google Sheet setup
 
-Create a Google Sheet with a tab named `Players` and this header row:
+Create a Google Sheet with a tab named `Players_API_DO_NOT_TOUCH` and this header row:
 
-`UUID | Name | First Join | Last Join`
+`UUID | Name | First Join | Last Join | Role | Play Time Hours | Balance | Deaths | Player Kills`
 
-Format the last two columns as date/time.
+Format the `First Join` and `Last Join` columns as date/time.
 
 ## Apps Script setup
 
@@ -93,4 +93,9 @@ The jar will be created in `build/libs/`.
 
 - `firstJoin` comes from Paper's first-played timestamp.
 - `lastJoin` can use either `lastLogin` or `lastSeen`.
+- `role` contains the LuckPerms primary group when LuckPerms is installed; otherwise it is blank.
+- `playHours` is the player's recorded playtime, rounded to two decimal places.
+- `balance` is read from the active Vault economy provider, including CMI when its Vault build or economy injector is installed. It is blank when no Vault economy provider is available.
+- `deaths` is the player's recorded death count.
+- `playerKills` counts player kills and excludes mob kills.
 - Existing players can be backfilled with `/exportjoins`.

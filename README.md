@@ -21,6 +21,10 @@ Username
 First join date
 Last join date (configurable: lastLogin or lastSeen)
 Highest Role (Luckperms Only)
+Play hours
+Balance (Vault economy)
+Deaths
+Player kills
 
 
 ## 🚀 Commands
@@ -48,7 +52,7 @@ No databases. No APIs to manage. No plugins on other services.
 put mcgsplayersync.jar in your /plugins folder
 restart server
 Create a Google Sheet
-create a "players" tab
+create a "Players_API_DO_NOT_TOUCH" tab
 follow steps on wiki for google sheets guide
 Add the provided Apps Script
 Deploy it as a Web App

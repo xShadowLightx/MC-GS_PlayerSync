@@ -8,6 +8,8 @@ description: Exports Minecraft join data to Google Sheets
 
 softdepend:
   - LuckPerms
+  - Vault
+  - CMI
 
 commands:
   exportjoins:

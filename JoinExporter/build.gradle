@@ -7,6 +7,7 @@ version = "1.0.2"
 
 repositories {
     mavenCentral()
+    maven { url = "https://jitpack.io" }
     maven { url = "https://repo.papermc.io/repository/maven-public/" }
 }
 
@@ -14,6 +15,9 @@ dependencies {
     compileOnly "io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT"
     implementation "com.google.code.gson:gson:2.10.1"
     compileOnly "net.luckperms:api:5.4"
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
+        exclude group: "org.bukkit", module: "bukkit"
+    }
 }
 
 java {

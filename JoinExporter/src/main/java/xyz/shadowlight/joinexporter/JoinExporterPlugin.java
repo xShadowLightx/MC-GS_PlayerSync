@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.InputStream;
@@ -126,6 +128,16 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
         }
     }
 
+    private int resolvePlayerStatistic(OfflinePlayer player, Statistic statistic, String label) {
+        try {
+            return player.getStatistic(statistic);
+        } catch (Exception e) {
+            String name = player.getName() == null ? player.getUniqueId().toString() : player.getName();
+            getLogger().warning("Failed to read " + label + " for " + name + ": " + e.getMessage());
+            return 0;
+        }
+    }
+
     private CompletableFuture<String> resolveRoleAsync(OfflinePlayer player) {
         if (luckPerms == null) {
             return CompletableFuture.completedFuture("");
@@ -168,10 +180,36 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
         long firstJoin = player.getFirstPlayed();
         long lastJoin = resolveLastDate(player);
         double playHours = resolvePlayHours(player);
+        int deaths = resolvePlayerStatistic(player, Statistic.DEATHS, "deaths");
+        int playerKills = resolvePlayerStatistic(player, Statistic.PLAYER_KILLS, "player kills");
 
+        Double balance = null;
+        try {
+            balance = Bukkit.getScheduler().callSyncMethod(this, () -> resolveBalance(player)).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            getLogger().warning("Interrupted while reading balance for " + name + ".");
+        } catch (Exception e) {
+            getLogger().warning("Failed to read balance for " + name + ": " + e.getMessage());
+        }
+
+        Double playerBalance = balance;
         return resolveRoleAsync(player).thenApply(role ->
-                new PlayerRow(uuid, name, firstJoin, lastJoin, role, playHours)
+                new PlayerRow(uuid, name, firstJoin, lastJoin, role, playHours, playerBalance, deaths, playerKills)
         );
+    }
+
+    private Double resolveBalance(OfflinePlayer player) {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return null;
+        }
+
+        RegisteredServiceProvider<Economy> registration = Bukkit.getServicesManager().getRegistration(Economy.class);
+        if (registration == null || !registration.getProvider().isEnabled()) {
+            return null;
+        }
+
+        return registration.getProvider().getBalance(player);
     }
 
     private void exportPlayerAsync(OfflinePlayer player, CommandSender senderToNotify) {
@@ -392,14 +430,21 @@ public final class JoinExporterPlugin extends JavaPlugin implements Listener, Ta
         private final long lastJoin;
         private final String role;
         private final double playHours;
+        private final Double balance;
+        private final int deaths;
+        private final int playerKills;
 
-        private PlayerRow(String uuid, String name, long firstJoin, long lastJoin, String role, double playHours) {
+        private PlayerRow(String uuid, String name, long firstJoin, long lastJoin, String role, double playHours,
+                          Double balance, int deaths, int playerKills) {
             this.uuid = uuid;
             this.name = name;
             this.firstJoin = firstJoin;
             this.lastJoin = lastJoin;
             this.role = role;
             this.playHours = playHours;
+            this.balance = balance;
+            this.deaths = deaths;
+            this.playerKills = playerKills;
         }
     }
 
