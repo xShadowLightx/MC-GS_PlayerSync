@@ -1,6 +1,6 @@
 # 📊 MC-GAPI — Minecraft Google Sheets Player Integration
 
-Latest Release: v-2.1.0
+Latest Release: V-2.1.1
 
 Export player join data from your Paper server directly into Google Sheets — automatically.
 
