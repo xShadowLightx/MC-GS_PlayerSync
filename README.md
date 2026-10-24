@@ -90,7 +90,7 @@ Before using the plugin, review every option under `fields` in `plugins/MC-GAPI/
 
 Logout location is especially sensitive: it records a player's last `X,Y,Z` coordinates when they disconnect. Do not enable it for a public spreadsheet; use it only when there is a clear need and access to the sheet is restricted to trusted staff. Balance, role, and play statistics may also be sensitive depending on your server.
 
-Turning a field off prevents its value from being included in future exports, but does not erase values already in Google Sheets. Previously collected logout coordinates also remain in `plugins/MC-GAPI/logout-locations.yml`; remove that file and clear the corresponding sheet cells yourself if you need to delete retained location data. Protect the webhook URL and shared secret, and rotate the secret if it is exposed.
+Turning a field off prevents its value from being included in future exports, but does not erase values already in Google Sheets. Previously collected logout coordinates also remain in `plugins/MC-GAPI/logout-locations.yml`; remove that file and clear the corresponding sheet cells yourself if you need to delete retained location data. Protect the Google webhook URL and shared secret, and rotate the secret if it is exposed.
 
 Example: to avoid exporting logout coordinates, set `fields.logout-location: false` before starting or reloading the plugin.
 

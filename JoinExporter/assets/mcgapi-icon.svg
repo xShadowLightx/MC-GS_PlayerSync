@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">MC-GAPI icon</title>
+  <desc id="description">A pixel inspired spreadsheet with an export arrow on a dark teal and blue tile.</desc>
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#172235"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#55e7d0"/>
+      <stop offset="1" stop-color="#3aa9ff"/>
+    </linearGradient>
+    <linearGradient id="sheet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#75f0c5"/>
+      <stop offset="1" stop-color="#27b879"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="480" height="480" rx="100" fill="url(#tile)"/>
+  <path d="M142 88h146l82 82v253H142z" fill="#e9f7f2"/>
+  <path d="M288 88v82h82" fill="#b8e8d5"/>
+  <path d="M174 207h50v44h-50zM238 207h50v44h-50zM302 207h36v44h-36z" fill="url(#sheet)"/>
+  <path d="M174 267h50v44h-50zM238 267h50v44h-50zM302 267h36v44h-36z" fill="#c6d9e8"/>
+  <path d="M174 327h50v44h-50zM238 327h50v44h-50zM302 327h36v44h-36z" fill="url(#accent)"/>
+  <circle cx="113" cy="220" r="12" fill="#a7f3d0"/>
+  <circle cx="113" cy="289" r="12" fill="#a7f3d0"/>
+  <path d="M113 248v14" stroke="url(#accent)" stroke-width="12" stroke-linecap="round"/>
+  <path d="M258 414v47m-28-28 28-28 28 28" fill="none" stroke="url(#accent)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

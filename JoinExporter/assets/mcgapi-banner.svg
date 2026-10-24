@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="260" viewBox="0 0 1120 260" role="img" aria-labelledby="title description">
+  <title id="title">MC-GAPI</title>
+  <desc id="description">A pixel inspired Google Sheets export mark beside the MC-GAPI wordmark.</desc>
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#172235"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#55e7d0"/>
+      <stop offset="1" stop-color="#3aa9ff"/>
+    </linearGradient>
+    <linearGradient id="sheet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#75f0c5"/>
+      <stop offset="1" stop-color="#27b879"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="22" y="22" width="216" height="216" rx="38" fill="url(#tile)"/>
+  <path d="M84 62h70l38 38v98H84z" fill="#e9f7f2"/>
+  <path d="M154 62v38h38" fill="#b8e8d5"/>
+  <path d="M100 116h23v20h-23zM130 116h23v20h-23zM160 116h17v20h-17z" fill="url(#sheet)"/>
+  <path d="M100 145h23v20h-23zM130 145h23v20h-23zM160 145h17v20h-17z" fill="#c6d9e8"/>
+  <path d="M100 174h23v12h-23zM130 174h23v12h-23zM160 174h17v12h-17z" fill="url(#accent)"/>
+  <path d="M54 104v56" stroke="url(#accent)" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="54" cy="91" r="7" fill="#a7f3d0"/>
+  <circle cx="54" cy="173" r="7" fill="#a7f3d0"/>
+
+  <text x="282" y="132" fill="#111827" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="88" font-weight="800" letter-spacing="-4">MC-<tspan fill="#18b9a5">GAPI</tspan></text>
+  <text x="290" y="181" fill="#64748b" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="700" letter-spacing="5">MINECRAFT  →  GOOGLE SHEETS</text>
+</svg>
