@@ -1,4 +1,4 @@
-![MC-GAPI Banner](https://github.com/xShadowLightx/MC-GS_PlayerSync/commit/e474ef9bcae64f278704a1e092efc3e1243058b2#diff-e3a5b3bd586ae72cdf8c6ce7fe4d2626eed178efd4278bf0d43255749f0ae4cc)
+![MC-GAPI Banner](JoinExporter/assets/mcgapi-banner.svg)
 
 
 
